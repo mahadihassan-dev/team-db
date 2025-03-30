@@ -6,27 +6,35 @@ import { Team } from './entities/team.entity';
 @Injectable()
 export class TeamService {
   constructor(
-    @InjectRepository(Team)
-    private teamRepository: Repository<Team>,
+    @InjectRepository(Team) 
+    private readonly teamRepository: Repository<Team>,
   ) {}
 
-  create(team: Partial<Team>) {
+  async create(teamData: Partial<Team>): Promise<Team> {
+    const team = this.teamRepository.create(teamData);
     return this.teamRepository.save(team);
   }
 
-  findAll() {
+  async findAll(): Promise<Team[]> {
     return this.teamRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<Team | null> {
     return this.teamRepository.findOne({ where: { id } });
   }
 
-  update(id: number, team: Partial<Team>) {
-    return this.teamRepository.update(id, team);
+  async update(id: number, teamData: Partial<Team>): Promise<Team> {
+    await this.teamRepository.update(id, teamData);
+    const updatedTeam = await this.findOne(id);
+    
+    if (!updatedTeam) {
+      throw new Error(`Team with ID ${id} not found`);
+    }
+    
+    return updatedTeam;
   }
 
-  delete(id: number) {
-    return this.teamRepository.delete(id);
+  async delete(id: number): Promise<void> {
+    await this.teamRepository.delete(id);
   }
 }

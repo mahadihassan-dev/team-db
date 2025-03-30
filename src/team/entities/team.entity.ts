@@ -6,11 +6,11 @@ export class Team {
   id: number;
 
   @Column()
-  teamName: string;
-
-  @Column({ nullable: true })
-  teamLogo: string; // Store image URL
+  name: string;
 
   @Column()
-  teamColor: string;
+  logo: string;
+
+  @Column()
+  color: string;
 }
